@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+{% block title %}Patients{% endblock %}
+{% block page_title %}Patients{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="mb-0 fw-bold">All Patients</h5>
+    <a href="{% url 'patient_create' %}" class="btn btn-sm" style="background:#00c9a7; color:#0a1628; font-weight:600;">
+        <i class="fas fa-user-plus me-1"></i>Register Patient
+    </a>
+</div>
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="GET" class="d-flex gap-2">
+            <input type="text" name="q" value="{{ q }}" placeholder="Search name or ID..." class="form-control form-control-sm" style="max-width:280px;">
+            <select name="risk" class="form-select form-select-sm" style="max-width:160px;">
+                <option value="">All Risk Levels</option>
+                <option value="High" {% if risk_filter == 'High' %}selected{% endif %}>High Risk</option>
+                <option value="Medium" {% if risk_filter == 'Medium' %}selected{% endif %}>Medium Risk</option>
+                <option value="Low" {% if risk_filter == 'Low' %}selected{% endif %}>Low Risk</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+        </form>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead><tr>
+                <th class="ps-3">ID</th><th>Name</th><th>Age</th><th>Gender</th>
+                <th>No-Show Rate</th><th>Risk Level</th><th>Action</th>
+            </tr></thead>
+            <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td class="ps-3"><code style="font-size:0.75rem;">{{ patient.patient_id }}</code></td>
+                <td><strong>{{ patient.full_name }}</strong>
+                    <div style="font-size:0.72rem; color:#6b7a8d;">{{ patient.postcode_area }}</div></td>
+                <td>{{ patient.age }}</td>
+                <td>{{ patient.gender }}</td>
+                <td>{{ patient.noshow_rate|floatformat:2 }}</td>
+                <td><span class="risk-badge {{ patient.risk_level|lower }}">{{ patient.risk_level }}</span></td>
+                <td><a href="{% url 'patient_detail' patient.pk %}" class="btn btn-sm" style="background:rgba(15,76,129,0.08); color:#0f4c81; font-size:0.75rem;">View</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-muted py-5">No patients found. Import data first.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

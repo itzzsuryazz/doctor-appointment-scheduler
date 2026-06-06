@@ -1,0 +1,175 @@
+{% extends 'base/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="stat-icon" style="background:rgba(15,76,129,0.1);">
+                    <i class="fas fa-calendar-check" style="color:#0f4c81;"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{ total_appointments }}</div>
+            <div class="stat-label">Total Appointments</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="stat-icon" style="background:rgba(231,76,60,0.1);">
+                    <i class="fas fa-user-times" style="color:#e74c3c;"></i>
+                </div>
+                <span style="font-size:0.75rem; color:#e74c3c; font-weight:600;">{{ no_show_rate }}%</span>
+            </div>
+            <div class="stat-value" style="color:#e74c3c;">{{ total_no_shows }}</div>
+            <div class="stat-label">No-Shows</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="stat-icon" style="background:rgba(0,201,167,0.1);">
+                    <i class="fas fa-users" style="color:#00c9a7;"></i>
+                </div>
+            </div>
+            <div class="stat-value" style="color:#00a78e;">{{ total_patients }}</div>
+            <div class="stat-label">Total Patients</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="stat-icon" style="background:rgba(243,156,18,0.1);">
+                    <i class="fas fa-pound-sign" style="color:#f39c12;"></i>
+                </div>
+            </div>
+            <div class="stat-value" style="color:#f39c12;">£{{ revenue_loss }}</div>
+            <div class="stat-label">Revenue Lost</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600; font-size:0.88rem;">
+                <i class="fas fa-chart-bar me-2" style="color:#0f4c81;"></i>No-Show Rate by Day of Week
+            </div>
+            <div class="card-body p-3">
+                <canvas id="dayChart" height="90"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600; font-size:0.88rem;">
+                <i class="fas fa-brain me-2" style="color:#00a78e;"></i>Risk Distribution
+            </div>
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <canvas id="riskChart" width="170" height="170"></canvas>
+                <div class="d-flex gap-3 mt-3" style="font-size:0.78rem;">
+                    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e74c3c;margin-right:4px;"></span>High</span>
+                    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f39c12;margin-right:4px;"></span>Medium</span>
+                    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#27ae60;margin-right:4px;"></span>Low</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center" style="border-color:#e2e8f0!important; padding:14px 18px;">
+                <span style="font-weight:600; font-size:0.88rem;"><i class="fas fa-calendar-alt me-2" style="color:#0f4c81;"></i>Upcoming Appointments</span>
+                <a href="{% url 'appointment_list' %}" style="font-size:0.78rem; color:#0f4c81;">View all</a>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr>
+                        <th class="ps-3">Patient</th><th>Date</th><th>Doctor</th><th>Risk</th><th>Action</th>
+                    </tr></thead>
+                    <tbody>
+                    {% for appt in upcoming %}
+                    <tr>
+                        <td class="ps-3"><strong>{{ appt.patient.full_name }}</strong>
+                            <div style="font-size:0.72rem; color:#6b7a8d;">{{ appt.appointment_type }}</div></td>
+                        <td>{{ appt.appointment_date|date:"d M Y" }}
+                            <div style="font-size:0.72rem; color:#6b7a8d;">{{ appt.appointment_hour }}:00</div></td>
+                        <td>{{ appt.doctor|default:"—" }}</td>
+                        <td>
+                            {% if appt.prediction %}
+                            <span class="risk-badge {{ appt.prediction.risk_label|lower }}">{{ appt.prediction.risk_label }}</span>
+                            {% else %}<span style="color:#6b7a8d; font-size:0.75rem;">—</span>{% endif %}
+                        </td>
+                        <td><a href="{% url 'appointment_detail' appt.pk %}" class="btn btn-sm" style="background:rgba(15,76,129,0.08); color:#0f4c81; font-size:0.75rem;">View</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No upcoming appointments</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600; font-size:0.88rem;">
+                <i class="fas fa-hospital me-2" style="color:#00a78e;"></i>Clinic Performance
+            </div>
+            <div class="card-body">
+                {% for clinic in clinic_stats %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1" style="font-size:0.82rem;">
+                        <span>{{ clinic.name }}</span>
+                        <span style="font-weight:600; color:{% if clinic.rate > 30 %}#e74c3c{% elif clinic.rate > 20 %}#f39c12{% else %}#27ae60{% endif %};">{{ clinic.rate }}%</span>
+                    </div>
+                    <div class="risk-meter">
+                        <div class="risk-meter-fill {% if clinic.rate > 30 %}high{% elif clinic.rate > 20 %}medium{% else %}low{% endif %}" style="width:{{ clinic.rate }}%"></div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center py-3" style="font-size:0.85rem;">No clinic data yet. Import data first.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const dayData = {{ day_chart_data|safe }};
+new Chart(document.getElementById('dayChart'), {
+    type: 'bar',
+    data: {
+        labels: dayData.labels,
+        datasets: [{
+            label: 'No-Show Rate (%)',
+            data: dayData.no_show_rates,
+            backgroundColor: dayData.no_show_rates.map(v => v > 30 ? 'rgba(231,76,60,0.75)' : v > 20 ? 'rgba(243,156,18,0.75)' : 'rgba(39,174,96,0.75)'),
+            borderRadius: 5,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' }, grid: { color: '#f0f4f8' } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+const riskData = {{ risk_distribution|safe }};
+new Chart(document.getElementById('riskChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['High', 'Medium', 'Low'],
+        datasets: [{ data: [riskData.high, riskData.medium, riskData.low],
+            backgroundColor: ['#e74c3c', '#f39c12', '#27ae60'], borderWidth: 0 }]
+    },
+    options: { cutout: '70%', plugins: { legend: { display: false } } }
+});
+</script>
+{% endblock %}

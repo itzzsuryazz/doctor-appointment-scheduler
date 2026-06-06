@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% block title %}Bulk Predict{% endblock %}
+{% block page_title %}Bulk Predictions{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body p-4 text-center">
+                <i class="fas fa-sync fa-3x mb-3" style="color:#0f4c81;"></i>
+                <h5>Re-run Predictions</h5>
+                <p class="text-muted" style="font-size:0.88rem;">
+                    This will update risk scores for all upcoming scheduled appointments.
+                </p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-play me-2"></i>Run Predictions
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

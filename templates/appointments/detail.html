@@ -1,0 +1,163 @@
+{% extends 'base/base.html' %}
+{% block title %}Appointment Detail{% endblock %}
+{% block page_title %}Appointment Detail{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a href="{% url 'appointment_list' %}" style="color:#6b7a8d; font-size:0.85rem; text-decoration:none;">
+            <i class="fas fa-arrow-left me-1"></i>Back
+        </a>
+        <h5 class="mb-0 mt-1 fw-bold">{{ appointment.appointment_id }}</h5>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'send_reminder' appointment.pk %}" class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-bell me-1"></i>Send Reminder
+        </a>
+        <a href="{% url 'appointment_cancel' appointment.pk %}" class="btn btn-sm btn-outline-danger">
+            <i class="fas fa-times me-1"></i>Cancel
+        </a>
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600; font-size:0.88rem;">
+                <i class="fas fa-calendar-check me-2" style="color:#0f4c81;"></i>Appointment Info
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div style="font-size:0.72rem; color:#6b7a8d; text-transform:uppercase; font-weight:600;">Patient</div>
+                        <a href="{% url 'patient_detail' appointment.patient.pk %}" style="color:#0f4c81; text-decoration:none; font-weight:600;">{{ appointment.patient.full_name }}</a>
+                        <div style="font-size:0.8rem; color:#6b7a8d;">{{ appointment.patient.age }}y · {{ appointment.patient.gender }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div style="font-size:0.72rem; color:#6b7a8d; text-transform:uppercase; font-weight:600;">Doctor / Clinic</div>
+                        <div class="fw-500">{{ appointment.doctor|default:"Not assigned" }}</div>
+                        <div style="font-size:0.8rem; color:#6b7a8d;">{{ appointment.clinic|default:"—" }}</div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div style="font-size:0.72rem; color:#6b7a8d; text-transform:uppercase; font-weight:600;">Date</div>
+                        <div class="fw-bold">{{ appointment.appointment_date|date:"d M Y" }}</div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div style="font-size:0.72rem; color:#6b7a8d; text-transform:uppercase; font-weight:600;">Time</div>
+                        <div class="fw-bold">{{ appointment.appointment_hour }}:00</div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div style="font-size:0.72rem; color:#6b7a8d; text-transform:uppercase; font-weight:600;">Type</div>
+                        <div class="fw-bold">{{ appointment.appointment_type }}</div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div style="font-size:0.72rem; color:#6b7a8d; text-transform:uppercase; font-weight:600;">Fee</div>
+                        <div class="fw-bold">£{{ appointment.consultation_fee_gbp }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div style="font-size:0.72rem; color:#6b7a8d; text-transform:uppercase; font-weight:600;">Status</div>
+                        <span class="badge {% if appointment.status == 'Completed' %}bg-success{% elif appointment.status == 'No-Show' %}bg-danger{% elif appointment.status == 'Cancelled' %}bg-secondary{% else %}bg-warning text-dark{% endif %}">
+                            {{ appointment.status }}
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <div style="font-size:0.72rem; color:#6b7a8d; text-transform:uppercase; font-weight:600;">Reminders Sent</div>
+                        <div class="fw-bold">{{ appointment.number_of_reminders_sent }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600; font-size:0.88rem;">
+                <i class="fas fa-edit me-2" style="color:#0f4c81;"></i>Update Status
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-sm-4">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Status</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="col-sm-8 d-flex align-items-end gap-4">
+                            <div class="form-check">{{ form.no_show }}
+                                <label class="form-check-label" style="font-size:0.85rem;">No-Show</label>
+                            </div>
+                            <div class="form-check">{{ form.slot_rebooked }}
+                                <label class="form-check-label" style="font-size:0.85rem;">Slot Rebooked</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Notes</label>
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        {% if prediction %}
+        <div class="card mb-4" style="border: 2px solid {% if prediction.risk_label == 'High' %}rgba(231,76,60,0.4){% elif prediction.risk_label == 'Medium' %}rgba(243,156,18,0.4){% else %}rgba(39,174,96,0.4){% endif %};">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600; font-size:0.88rem;">
+                <i class="fas fa-brain me-2"></i>Risk Prediction
+            </div>
+            <div class="card-body text-center py-4">
+                <div style="font-size:3rem; font-weight:800; color:{% if prediction.risk_label == 'High' %}#e74c3c{% elif prediction.risk_label == 'Medium' %}#f39c12{% else %}#27ae60{% endif %};">
+                    {{ prediction.risk_percent }}%
+                </div>
+                <span class="risk-badge {{ prediction.risk_label|lower }} mb-3 d-inline-block" style="font-size:0.85rem; padding:6px 16px;">
+                    {{ prediction.risk_label }} Risk
+                </span>
+                <div class="risk-meter my-3">
+                    <div class="risk-meter-fill {{ prediction.risk_label|lower }}" style="width:{{ prediction.risk_percent }}%"></div>
+                </div>
+                {% if prediction.risk_label == 'High' %}
+                <div style="background:rgba(231,76,60,0.08); border:1px solid rgba(231,76,60,0.2); border-radius:8px; padding:10px; font-size:0.82rem; text-align:left;">
+                    <strong>Recommended:</strong>
+                    <ul class="mb-0 mt-1 ps-3">
+                        <li>Send extra reminder</li>
+                        <li>Request confirmation call</li>
+                        <li>Consider overbooking</li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card mb-4">
+            <div class="card-body text-center py-4 text-muted">
+                <i class="fas fa-brain fa-2x mb-2 d-block" style="opacity:0.3;"></i>
+                No prediction yet. Train the model first.
+            </div>
+        </div>
+        {% endif %}
+        <div class="card">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600; font-size:0.88rem;">
+                <i class="fas fa-user me-2" style="color:#00a78e;"></i>Patient Stats
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Total Appointments</span>
+                    <strong>{{ appointment.patient.total_appointments }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Past No-Shows</span>
+                    <strong style="color:{% if appointment.patient.previous_noshow_count > 2 %}#e74c3c{% else %}#1a2332{% endif %};">
+                        {{ appointment.patient.previous_noshow_count }}
+                    </strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">No-Show Rate</span>
+                    <strong>{{ appointment.patient.noshow_rate }}</strong>
+                </div>
+                <div class="d-flex justify-content-between" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Distance</span>
+                    <strong>{{ appointment.patient.distance_to_clinic_km }} km</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

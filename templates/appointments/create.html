@@ -1,0 +1,73 @@
+{% extends 'base/base.html' %}
+{% block title %}New Appointment{% endblock %}
+{% block page_title %}New Appointment{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600;">
+                <i class="fas fa-calendar-plus me-2" style="color:#0f4c81;"></i>Book New Appointment
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-600" style="font-size:0.82rem;">Patient</label>
+                            {{ form.patient }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Doctor</label>
+                            {{ form.doctor }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Clinic</label>
+                            {{ form.clinic }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Appointment Type</label>
+                            {{ form.appointment_type }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Booking Date</label>
+                            {{ form.scheduled_date }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Appointment Date</label>
+                            {{ form.appointment_date }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Hour (8-18)</label>
+                            {{ form.appointment_hour }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Fee (£)</label>
+                            {{ form.consultation_fee_gbp }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Reminder Hours</label>
+                            {{ form.reminder_hours_before }}
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                {{ form.sms_reminder_sent }}
+                                <label class="form-check-label" style="font-size:0.85rem;">Send SMS Reminder</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Notes</label>
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Book & Predict Risk
+                        </button>
+                        <a href="{% url 'appointment_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
