@@ -1,0 +1,95 @@
+{% extends 'base/base.html' %}
+{% block title %}Patient Detail{% endblock %}
+{% block page_title %}Patient Detail{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a href="{% url 'patient_list' %}" style="color:#6b7a8d; font-size:0.85rem; text-decoration:none;">
+            <i class="fas fa-arrow-left me-1"></i>Back to Patients
+        </a>
+        <h5 class="mb-0 mt-1 fw-bold">{{ patient.full_name }}</h5>
+    </div>
+    <a href="{% url 'patient_edit' patient.pk %}" class="btn btn-sm btn-outline-primary">
+        <i class="fas fa-edit me-1"></i>Edit
+    </a>
+</div>
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body p-4">
+                <div style="width:60px; height:60px; background:#0f4c81; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.4rem; font-weight:700; margin-bottom:14px;">
+                    {{ patient.first_name|first }}{{ patient.last_name|first }}
+                </div>
+                <h5 class="mb-0">{{ patient.full_name }}</h5>
+                <div style="font-size:0.82rem; color:#6b7a8d; margin-bottom:16px;">{{ patient.patient_id }}</div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Age</span><strong>{{ patient.age }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Gender</span><strong>{{ patient.gender }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Postcode</span><strong>{{ patient.postcode_area }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Distance</span><strong>{{ patient.distance_to_clinic_km }} km</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Chronic Condition</span>
+                    <strong>{{ patient.has_chronic_condition|yesno:"Yes,No" }}</strong>
+                </div>
+                <hr style="opacity:0.15;">
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Total Appointments</span><strong>{{ patient.total_appointments }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">No-Shows</span>
+                    <strong style="color:{% if patient.previous_noshow_count > 2 %}#e74c3c{% else %}#1a2332{% endif %};">
+                        {{ patient.previous_noshow_count }}
+                    </strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;">
+                    <span style="color:#6b7a8d;">Risk Level</span>
+                    <span class="risk-badge {{ patient.risk_level|lower }}">{{ patient.risk_level }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600; font-size:0.88rem;">
+                <i class="fas fa-history me-2" style="color:#0f4c81;"></i>Appointment History
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr>
+                        <th class="ps-3">Date</th><th>Type</th><th>Status</th><th>Risk</th><th></th>
+                    </tr></thead>
+                    <tbody>
+                    {% for appt in appointments %}
+                    <tr>
+                        <td class="ps-3">{{ appt.appointment_date|date:"d M Y" }}
+                            <div style="font-size:0.72rem; color:#6b7a8d;">{{ appt.appointment_hour }}:00</div></td>
+                        <td>{{ appt.appointment_type }}</td>
+                        <td>
+                            <span class="badge {% if appt.status == 'Completed' %}bg-success{% elif appt.status == 'No-Show' %}bg-danger{% elif appt.status == 'Cancelled' %}bg-secondary{% else %}bg-warning text-dark{% endif %}" style="font-size:0.7rem;">
+                                {{ appt.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if appt.prediction %}
+                            <span class="risk-badge {{ appt.prediction.risk_label|lower }}">{{ appt.prediction.risk_label }}</span>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td><a href="{% url 'appointment_detail' appt.pk %}" style="color:#0f4c81; font-size:0.78rem;">View</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No appointments yet</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

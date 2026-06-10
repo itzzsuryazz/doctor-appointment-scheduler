@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | MedScheduler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: #0a1628;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-container {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            min-height: 560px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+        .login-left {
+            flex: 1;
+            background: linear-gradient(145deg, #0f4c81 0%, #0a2a4a 100%);
+            padding: 50px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .login-left::before {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(0,201,167,0.15), transparent 70%);
+        }
+        .login-left::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -60px;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(26,109,181,0.2), transparent 70%);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        .brand-icon {
+            width: 44px; height: 44px;
+            background: #00c9a7;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: #0a1628;
+            font-size: 1.2rem;
+        }
+        .brand-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .brand-sub {
+            font-size: 0.65rem;
+            color: #00c9a7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .login-left h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.25;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .login-left h1 span { color: #00c9a7; }
+        .login-left p {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.9rem;
+            line-height: 1.65;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .feature-list {
+            list-style: none;
+            position: relative;
+            z-index: 1;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.83rem;
+            margin-bottom: 10px;
+        }
+        .feature-list li i {
+            color: #00c9a7;
+            width: 16px;
+        }
+        .login-right {
+            width: 420px;
+            background: #fff;
+            padding: 50px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .login-right h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0a1628;
+            margin-bottom: 6px;
+        }
+        .login-right .sub {
+            color: #6b7a8d;
+            font-size: 0.85rem;
+            margin-bottom: 32px;
+        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .input-wrap {
+            position: relative;
+        }
+        .input-wrap i {
+            position: absolute;
+            left: 13px; top: 50%;
+            transform: translateY(-50%);
+            color: #aab4c0;
+            font-size: 0.9rem;
+        }
+        .input-wrap input {
+            width: 100%;
+            padding: 11px 13px 11px 38px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9px;
+            font-size: 0.9rem;
+            color: #1a2332;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.2s;
+            background: #fafbfc;
+        }
+        .input-wrap input:focus {
+            border-color: #0f4c81;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(15,76,129,0.08);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0f4c81, #1a6db5);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin-top: 6px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(15,76,129,0.3);
+        }
+        .error-box {
+            background: rgba(231,76,60,0.08);
+            border: 1px solid rgba(231,76,60,0.25);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #c0392b;
+            font-size: 0.83rem;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 0.83rem;
+            color: #6b7a8d;
+        }
+        .register-link a {
+            color: #0f4c81;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .register-link a:hover { text-decoration: underline; }
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+        .divider span { font-size: 0.75rem; color: #aab4c0; }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="login-left">
+        <div class="brand">
+            <div class="brand-icon"><i class="fas fa-stethoscope"></i></div>
+            <div>
+                <div class="brand-name">MedScheduler</div>
+                <div class="brand-sub">No-Show Predictor</div>
+            </div>
+        </div>
+        <h1>Smart Clinic <span>Management</span></h1>
+        <p>Predict patient no-shows before they happen. Save time, reduce revenue loss, and improve clinic efficiency.</p>
+        <ul class="feature-list">
+            <li><i class="fas fa-brain"></i> ML-powered no-show risk prediction</li>
+            <li><i class="fas fa-calendar-check"></i> Smart appointment scheduling</li>
+            <li><i class="fas fa-chart-bar"></i> Real-time analytics dashboard</li>
+            <li><i class="fas fa-bell"></i> Automated SMS reminders</li>
+            <li><i class="fas fa-users"></i> Full patient management</li>
+        </ul>
+    </div>
+    <div class="login-right">
+        <h2>Welcome back</h2>
+        <p class="sub">Sign in to access the clinic portal</p>
+
+        {% if form.errors %}
+        <div class="error-box">
+            <i class="fas fa-exclamation-circle"></i>
+            Invalid username or password. Please try again.
+        </div>
+        {% endif %}
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="error-box" style="background:rgba(39,174,96,0.08); border-color:rgba(39,174,96,0.25); color:#1e8449;">
+            <i class="fas fa-check-circle"></i> {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-wrap">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" placeholder="Enter your username" autofocus required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrap">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Enter your password" required>
+                </div>
+            </div>
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+        </form>
+
+        <div class="divider"><span>or</span></div>
+
+        <div class="register-link">
+            New patient? <a href="{% url 'patient_register' %}">Register here</a>
+        </div>
+        <div class="register-link" style="margin-top: 8px;">
+            <small style="color:#aab4c0;">Admin: admin / admin123</small>
+        </div>
+    </div>
+</div>
+</body>
+</html>

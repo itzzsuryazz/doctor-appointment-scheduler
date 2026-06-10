@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% block title %}Edit Patient{% endblock %}
+{% block page_title %}Edit Patient{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header bg-white border-bottom" style="border-color:#e2e8f0!important; padding:14px 18px; font-weight:600;">
+                <i class="fas fa-edit me-2" style="color:#0f4c81;"></i>Edit — {{ patient.full_name }}
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Age</label>
+                            {{ form.age }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Postcode</label>
+                            {{ form.postcode_area }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" style="font-size:0.82rem; font-weight:600;">Distance to Clinic (km)</label>
+                            {{ form.distance_to_clinic_km }}
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-end">
+                            <div class="form-check">
+                                {{ form.has_chronic_condition }}
+                                <label class="form-check-label" style="font-size:0.85rem;">Has Chronic Condition</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                        <a href="{% url 'patient_detail' patient.pk %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
