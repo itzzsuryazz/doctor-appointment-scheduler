@@ -12,3 +12,4 @@ ml_model/metrics.pkl
 .vscode/
 *.egg-info/
 Thumbs.db
+desktop.ini
