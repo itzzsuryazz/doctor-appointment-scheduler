@@ -3,7 +3,7 @@ db.sqlite3
 __pycache__/
 *.pyc
 *.pyo
-staticfiles/
+
 media/
 ml_model/no_show_model.pkl
 ml_model/scaler.pkl
